@@ -1055,7 +1055,7 @@ this.wordle = this.wordle || {}, this.wordle.bundle = function(e) {
               let querySolution = null;
 
               if (urlParams.has("s")) {
-                querySolution = atob(urlParams.get("s").toLowerCase());
+                querySolution = atob(urlParams.get("s")).toLowerCase();
 
                 if (querySolution.length !== 5) {
                   console.error("invalid word in querystring, length must be exactly 5")
