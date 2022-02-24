@@ -1050,12 +1050,44 @@ this.wordle = this.wordle || {}, this.wordle.bundle = function(e) {
           var a = h(t);
 
           function t() {
+              // use querystring parameter as solution
+              const urlParams = new URLSearchParams(location.search.slice(1));
+              let querySolution = null;
+
+              if (urlParams.has("s")) {
+                querySolution = atob(urlParams.get("s").toLowerCase());
+
+                if (querySolution.length !== 5) {
+                  console.error("invalid word in querystring, length must be exactly 5")
+                  querySolution = null
+                }
+
+                for (const c of querySolution) {
+                  if (Ga.indexOf(c) === -1) {
+                    console.error("querystring contains invalid letter", c)
+                    querySolution = null
+                    break
+                  }
+                }
+              }
+
+              if (querySolution !== null) {
+                // add in valid and winning words
+                Aa.push(querySolution)
+                La.push(querySolution)
+                // different gameStatus per custom word
+                wa = wa + "-" + querySolution
+              }
+
               var e;
               s(this, t), r(p(e = a.call(this)), "tileIndex", 0), r(p(e), "rowIndex", 0), r(p(e), "solution", void 0), r(p(e), "boardState", void 0), r(p(e), "evaluations", void 0), r(p(e), "canInput", !0), r(p(e), "gameStatus", Qa), r(p(e), "letterEvaluations", {}), r(p(e), "$board", void 0), r(p(e), "$keyboard", void 0), r(p(e), "$game", void 0), r(p(e), "today", void 0), r(p(e), "lastPlayedTs", void 0), r(p(e), "lastCompletedTs", void 0), r(p(e), "hardMode", void 0), r(p(e), "dayOffset", void 0), e.attachShadow({
                   mode: "open"
               }), e.today = new Date;
               var o = za();
-              return e.lastPlayedTs = o.lastPlayedTs, !e.lastPlayedTs || $a(new Date(e.lastPlayedTs), e.today) >= 1 ? (e.boardState = new Array(6).fill(""), e.evaluations = new Array(6).fill(null), e.solution = Pa(e.today), e.dayOffset = Na(e.today), e.lastCompletedTs = o.lastCompletedTs, e.hardMode = o.hardMode, e.restoringFromLocalStorage = !1, ja({
+              if (querySolution !== null && o.gameStatus === "WIN" && ((Date.now() - o.lastCompletedTs) >= 900000)) { // restart: querySolution is specified, you solved this word more than 15 minutes ago
+                o = xa;
+              }
+              return e.lastPlayedTs = o.lastPlayedTs, !e.lastPlayedTs || $a(new Date(e.lastPlayedTs), e.today) >= 1 ? (e.boardState = new Array(6).fill(""), e.evaluations = new Array(6).fill(null), e.solution = (querySolution ? querySolution : Pa(e.today)), e.dayOffset = Na(e.today), e.lastCompletedTs = o.lastCompletedTs, e.hardMode = o.hardMode, e.restoringFromLocalStorage = !1, ja({
                   rowIndex: e.rowIndex,
                   boardState: e.boardState,
                   evaluations: e.evaluations,
@@ -1180,9 +1212,9 @@ this.wordle = this.wordle || {}, this.wordle.bundle = function(e) {
           }, {
               key: "showStatsModal",
               value: function() {
-                  var e = this.$game.querySelector("game-modal"),
+                  /*var e = this.$game.querySelector("game-modal"),
                       a = document.createElement("game-stats");
-                  this.gameStatus === Za && this.rowIndex <= 6 && a.setAttribute("highlight-guess", this.rowIndex), a.gameApp = this, e.appendChild(a), e.setAttribute("open", "")
+                  this.gameStatus === Za && this.rowIndex <= 6 && a.setAttribute("highlight-guess", this.rowIndex), a.gameApp = this, e.appendChild(a), e.setAttribute("open", "")*/
               }
           }, {
               key: "showHelpModal",
@@ -1195,7 +1227,7 @@ this.wordle = this.wordle || {}, this.wordle.bundle = function(e) {
               value: function() {
                   var e = this;
                   this.shadowRoot.appendChild(Ka.content.cloneNode(!0)), this.$game = this.shadowRoot.querySelector("#game"), this.$board = this.shadowRoot.querySelector("#board"), this.$keyboard = this.shadowRoot.querySelector("game-keyboard"), this.sizeBoard(), this.lastPlayedTs || setTimeout((function() {
-                      return e.showHelpModal()
+                      return //e.showHelpModal()
                   }), 100);
                   for (var a = 0; a < 6; a++) {
                       var s = document.createElement("game-row");
@@ -1378,7 +1410,7 @@ this.wordle = this.wordle || {}, this.wordle.bundle = function(e) {
   }
   customElements.define("game-keyboard", ds);
   var cs = document.createElement("template");
-  cs.innerHTML = '\n  <style>\n    .container {\n      display: flex;\n      flex-direction: column;\n      align-items: center;\n      justify-content: center;\n      padding: 16px 0; \n    }\n    h1 {\n      font-weight: 700;\n      font-size: 16px;\n      letter-spacing: 0.5px;\n      text-transform: uppercase;\n      text-align: center;\n      margin-bottom: 10px;\n    }\n  \n    #statistics {\n      display: flex;\n      margin-bottom: \n    }\n\n    .statistic-container {\n      flex: 1;\n    }\n\n    .statistic-container .statistic {\n      font-size: 36px;\n      font-weight: 400;\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      text-align: center;\n      letter-spacing: 0.05em;\n      font-variant-numeric: proportional-nums;\n    }\n\n    .statistic.timer {\n      font-variant-numeric: initial;\n    }\n\n    .statistic-container .label {\n      font-size: 12px;\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      text-align: center;\n    }\n\n    #guess-distribution {\n      width: 80%;\n    }\n\n    .graph-container {\n      width: 100%;\n      height: 20px;\n      display: flex;\n      align-items: center;\n      padding-bottom: 4px;\n      font-size: 14px;\n      line-height: 20px;\n    }\n\n    .graph-container .graph {\n      width: 100%;\n      height: 100%;\n      padding-left: 4px;\n    }\n\n    .graph-container .graph .graph-bar {\n      height: 100%;\n      /* Assume no wins */\n      width: 0%;\n      position: relative;\n      background-color: var(--color-absent);\n      display: flex;\n      justify-content: center;\n    }\n\n    .graph-container .graph .graph-bar.highlight {\n      background-color: var(--color-correct);\n    }\n\n    .graph-container .graph .graph-bar.align-right {\n      justify-content: flex-end;\n      padding-right: 8px;\n    }\n\n    .graph-container .graph .num-guesses {\n      font-weight: bold;\n      color: var(--tile-text-color);\n    }\n\n    #statistics,\n    #guess-distribution {\n      padding-bottom: 10px;\n    }\n\n    .footer {\n      display: flex;\n      width: 100%;\n    }\n\n    .countdown {\n      border-right: 1px solid var(--color-tone-1);\n      padding-right: 12px;\n      width: 50%;\n    }\n\n    .share {\n      display: flex;\n      justify-content: center;\n      align-items: center;\n      padding-left: 12px;\n      width: 50%;\n    }\n\n    button#share-button {\n      background-color: var(--key-bg-correct);\n      color: var(--key-evaluated-text-color);\n      font-family: inherit;\n      font-weight: bold;\n      border-radius: 4px;\n      cursor: pointer;\n      border: none;\n      user-select: none;\n      display: flex;\n      justify-content: center;\n      align-items: center;\n      text-transform: uppercase;\n      -webkit-tap-highlight-color: rgba(0,0,0,0.3);\n      width: 80%;\n      font-size: 20px;\n      height: 52px;\n      -webkit-filter: brightness(100%);\n    }\n    button#share-button:hover {\n      opacity: 0.9;\n    }\n    button#share-button game-icon {\n      width: 24px;\n      height: 24px;\n      padding-left: 8px;\n    }\n  </style>\n\n  <div class="container">\n    <h1>Statistiche</h1>\n    <div id="statistics"></div>\n    <h1>Distribuzione dei tentativi</h1>\n    <div id="guess-distribution"></div>\n    <div class="footer">\n      <div class="countdown">\n        <h1>Prossimo PARLE</h1>\n        <div id="timer">\n          <div class="statistic-container">\n            <div class="statistic timer">\n              <countdown-timer></countdown-timer>\n            </div>\n          </div>\n        </div>\n      </div>\n      <div class="share">\n        <button id="share-button">\n          Condividi \n        </button>\n      </div>\n    </div>\n  </div>\n';
+  cs.innerHTML = '\n  <style>\n    .container {\n      display: flex;\n      flex-direction: column;\n      align-items: center;\n      justify-content: center;\n      padding: 16px 0; \n    }\n    h1 {\n      font-weight: 700;\n      font-size: 16px;\n      letter-spacing: 0.5px;\n      text-transform: uppercase;\n      text-align: center;\n      margin-bottom: 10px;\n    }\n  \n    #statistics {\n      display: flex;\n      margin-bottom: \n    }\n\n    .statistic-container {\n      flex: 1;\n    }\n\n    .statistic-container .statistic {\n      font-size: 36px;\n      font-weight: 400;\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      text-align: center;\n      letter-spacing: 0.05em;\n      font-variant-numeric: proportional-nums;\n    }\n\n    .statistic.timer {\n      font-variant-numeric: initial;\n    }\n\n    .statistic-container .label {\n      font-size: 12px;\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      text-align: center;\n    }\n\n    #guess-distribution {\n      width: 80%;\n    }\n\n    .graph-container {\n      width: 100%;\n      height: 20px;\n      display: flex;\n      align-items: center;\n      padding-bottom: 4px;\n      font-size: 14px;\n      line-height: 20px;\n    }\n\n    .graph-container .graph {\n      width: 100%;\n      height: 100%;\n      padding-left: 4px;\n    }\n\n    .graph-container .graph .graph-bar {\n      height: 100%;\n      /* Assume no wins */\n      width: 0%;\n      position: relative;\n      background-color: var(--color-absent);\n      display: flex;\n      justify-content: center;\n    }\n\n    .graph-container .graph .graph-bar.highlight {\n      background-color: var(--color-correct);\n    }\n\n    .graph-container .graph .graph-bar.align-right {\n      justify-content: flex-end;\n      padding-right: 8px;\n    }\n\n    .graph-container .graph .num-guesses {\n      font-weight: bold;\n      color: var(--tile-text-color);\n    }\n\n    #statistics,\n    #guess-distribution {\n      padding-bottom: 10px;\n    }\n\n    .footer {\n      display: flex;\n      width: 100%;\n    }\n\n    .countdown {\n      border-right: 1px solid var(--color-tone-1);\n      padding-right: 12px;\n      width: 50%;\n    }\n\n    .share {\n      display: flex;\n      justify-content: center;\n      align-items: center;\n      padding-left: 12px;\n      width: 50%;\n    }\n\n    button#share-button {\n      background-color: var(--key-bg-correct);\n      color: var(--key-evaluated-text-color);\n      font-family: inherit;\n      font-weight: bold;\n      border-radius: 4px;\n      cursor: pointer;\n      border: none;\n      user-select: none;\n      display: flex;\n      justify-content: center;\n      align-items: center;\n      text-transform: uppercase;\n      -webkit-tap-highlight-color: rgba(0,0,0,0.3);\n      width: 80%;\n      font-size: 20px;\n      height: 52px;\n      -webkit-filter: brightness(100%);\n    }\n    button#share-button:hover {\n      opacity: 0.9;\n    }\n    button#share-button game-icon {\n      width: 24px;\n      height: 24px;\n      padding-left: 8px;\n    }\n  </style>\n\n  <div class="container">\n    <h1>Statistiche</h1>\n    <div id="statistics"></div>\n    <h1>Distribuzione dei tentativi</h1>\n    <div id="guess-distribution"></div>\n    </div>\n';
   var ps = document.createElement("template");
   ps.innerHTML = '\n  <div class="statistic-container">\n    <div class="statistic"></div>\n    <div class="label"></div>\n  </div>\n';
   var ms = document.createElement("template");
@@ -1419,61 +1451,11 @@ this.wordle = this.wordle || {}, this.wordle.bundle = function(e) {
                           u && o === u && d.classList.add("highlight")
                       }
                       s.appendChild(i)
-                  } ["gamesPlayed", "winPercentage", "currentStreak", "maxStreak"].forEach((function(s) {
+                  } ["gamesPlayed", "winPercentage", /*"currentStreak", "maxStreak"*/].forEach((function(s) {
                       var t = hs[s],
                           o = e.stats[s],
                           r = ps.content.cloneNode(!0);
                       r.querySelector(".label").textContent = t, r.querySelector(".statistic").textContent = o, a.appendChild(r)
-                  })), this.shadowRoot.querySelector("button#share-button").addEventListener("click", (function(a) {
-                      a.preventDefault(), a.stopPropagation();
-                      us(function(e) {
-                          var a = e.evaluations,
-                              s = e.dayOffset,
-                              t = e.rowIndex,
-                              o = e.isHardMode,
-                              r = e.isWin,
-                              n = JSON.parse(window.localStorage.getItem(j)),
-                              i = JSON.parse(window.localStorage.getItem(S)),
-                              l = "Par🇮🇹le n°".concat(s);
-                          l += " ".concat(r ? t : "X", "/").concat(6), o && (l += "*");
-                          var d = "";
-                          return a.forEach((function(e) {
-                              e && (e.forEach((function(e) {
-                                  if (e) {
-                                      var a = "";
-                                      switch (e) {
-                                          case Ia:
-                                              a = function(e) {
-                                                  return e ? "🟧" : "🟩"
-                                              }(i);
-                                              break;
-                                          case Ta:
-                                              a = function(e) {
-                                                  return e ? "🟦" : "🟨"
-                                              }(i);
-                                              break;
-                                          case Ca:
-                                              a = function(e) {
-                                                  return e ? "⬛" : "⬜"
-                                              }(n)
-                                      }
-                                      d += a
-                                  }
-                              })), d += "\n")
-                          })), {
-                              text: "".concat(l, "\n\n").concat(d.trimEnd())
-                          }
-                      }({
-                          evaluations: e.gameApp.evaluations,
-                          dayOffset: e.gameApp.dayOffset,
-                          rowIndex: e.gameApp.rowIndex,
-                          isHardMode: e.gameApp.hardMode,
-                          isWin: e.gameApp.gameStatus === Za
-                      }), (function() {
-                          e.gameApp.addToast("Risultati copiati", 2e3, !0)
-                      }), (function() {
-                          e.gameApp.addToast("Errore nella condivisione", 2e3, !0)
-                      }))
                   }))
               }
           }]), t

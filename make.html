@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Par🇮🇹le: crea il quiz</title>
+    <meta charset="utf-8">
+    <meta name="language" content="italian">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+    <style>
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+
+    #app {
+      width: 90%;
+      margin: 0.75em auto;
+      font-size: 2em;
+      text-align: center;
+    }
+
+    #app h1 {
+      font-size: 1em;
+    }
+
+    #app input, #app button {
+      width: 100%;
+      text-align: center;
+      padding: 0.5em;
+      margin: 0;
+      box-sizing: border-box;
+      font-size: 0.5em;
+    }
+
+    #app input {
+      text-transform: uppercase;
+    }
+
+    #app div {
+      margin: 0.75em 0;
+    }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <h1>PAR🇮🇹LE</h1>
+      <form id="make">
+        <fieldset>
+          <legend>Scrivi la parola:</legend>
+          <div>
+            <input id="word" type="text" pattern="[a-zA-Z]{5}">
+          </div>
+          <div>
+            <button type="submit" >Crea Quiz</button>
+          </div>
+        </fieldset>
+      </form>
+    </div>
+    <script>
+document
+  .querySelector('#make')
+    .addEventListener('submit', e => {
+      e.preventDefault()
+
+      const word = document.querySelector('#word').value
+      if (!/[a-zA-Z]{5}/.test(word)) {
+        return
+      }
+
+      const parts = location.pathname.split('/')
+      location.href = location.origin + parts.slice(0, parts.length - 1).join('/') + '/?s=' + encodeURIComponent(btoa(word))
+    })
+    </script>
+  </body>
+</html>
