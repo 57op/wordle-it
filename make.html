@@ -1,9 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="it">
   <head>
-    <title>Par🇮🇹le: crea il quiz</title>
+    <title>Par🇮🇹le: crea il puzzle</title>
     <meta charset="utf-8">
-    <meta name="language" content="italian">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
     <style>
     html, body {
@@ -11,17 +10,26 @@
       height: 100%;
       margin: 0;
       padding: 0;
+      text-align: center;
     }
 
     #app {
       width: 90%;
-      margin: 0.75em auto;
+      margin: 0 auto;
       font-size: 2em;
-      text-align: center;
+      text-align: left;
+      font-family: 'Clear Sans', 'Helvetica Neue', Arial, sans-serif;
     }
 
     #app h1 {
+      margin: 0;
+      padding: 0.25em 0;
       font-size: 1em;
+      font-weight: 700;
+      font-size: 36px;
+      letter-spacing: 0.2rem;
+      border-bottom: 1px solid #d3d6da;
+      text-align: center;
     }
 
     #app input, #app button {
@@ -33,12 +41,26 @@
       font-size: 0.5em;
     }
 
-    #app input {
+    #word {
       text-transform: uppercase;
+      outline: none;
+      border: 2px solid green;
+    }
+
+    #word:invalid, #word:out-of-range {
+      border: 2px solid red;
+      outline: none;
     }
 
     #app div {
       margin: 0.75em 0;
+    }
+
+    #rules p {
+      font-size: 0.6em;
+      margin: 0;
+      padding: 0;
+      text-align: left;
     }
     </style>
   </head>
@@ -46,15 +68,19 @@
     <div id="app">
       <h1>PAR🇮🇹LE</h1>
       <form id="make">
-        <fieldset>
-          <legend>Scrivi la parola:</legend>
-          <div>
-            <input id="word" type="text" pattern="[a-zA-Z]{5}">
-          </div>
-          <div>
-            <button type="submit" >Crea Quiz</button>
-          </div>
-        </fieldset>
+        <div id="rules">
+          <p>Usa esattamente 5 lettere.</p>
+          <p>Numeri e altri simboli non sono consentiti.</p>
+        </div>
+        <div>
+          <input
+            id="word" type="text"
+            placeholder="Scrivi la parola qui"
+            minlength="5" maxlength="5" pattern="[a-zA-Z]{5}" required>
+        </div>
+        <div>
+          <button type="submit" >Crea Puzzle</button>
+        </div>
       </form>
     </div>
     <script>

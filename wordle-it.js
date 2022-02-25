@@ -1084,7 +1084,7 @@ this.wordle = this.wordle || {}, this.wordle.bundle = function(e) {
                   mode: "open"
               }), e.today = new Date;
               var o = za();
-              if (querySolution !== null && o.gameStatus === "WIN" && ((Date.now() - o.lastCompletedTs) >= 900000)) { // restart: querySolution is specified, you solved this word more than 15 minutes ago
+              if (querySolution !== null && ((Date.now() - o.lastCompletedTs) >= 900000)) { // restart: querySolution is specified, you solved this word more than 15 minutes ago
                 o = xa;
               }
               return e.lastPlayedTs = o.lastPlayedTs, !e.lastPlayedTs || $a(new Date(e.lastPlayedTs), e.today) >= 1 ? (e.boardState = new Array(6).fill(""), e.evaluations = new Array(6).fill(null), e.solution = (querySolution ? querySolution : Pa(e.today)), e.dayOffset = Na(e.today), e.lastCompletedTs = o.lastCompletedTs, e.hardMode = o.hardMode, e.restoringFromLocalStorage = !1, ja({
