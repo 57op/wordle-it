@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="it">
+  <head>
+    <title>Par🇮🇹le: crea il puzzle</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+    <style>
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+
+    #app {
+      width: 90%;
+      margin: 0 auto;
+      font-size: 2em;
+      text-align: left;
+      font-family: 'Clear Sans', 'Helvetica Neue', Arial, sans-serif;
+    }
+
+    #app h1 {
+      margin: 0;
+      padding: 0.25em 0;
+      font-size: 1em;
+      font-weight: 700;
+      font-size: 36px;
+      letter-spacing: 0.2rem;
+      border-bottom: 1px solid #d3d6da;
+      text-align: center;
+    }
+
+    #app input, #app button {
+      width: 100%;
+      text-align: center;
+      padding: 0.5em;
+      margin: 0;
+      box-sizing: border-box;
+      font-size: 0.5em;
+    }
+
+    #word {
+      text-transform: uppercase;
+      outline: none;
+      border: 2px solid green;
+    }
+
+    #word:invalid, #word:out-of-range {
+      border: 2px solid red;
+      outline: none;
+    }
+
+    #app div {
+      margin: 0.75em 0;
+    }
+
+    #rules p {
+      font-size: 0.6em;
+      margin: 0;
+      padding: 0;
+      text-align: left;
+    }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <h1>PAR🇮🇹LE</h1>
+      <form id="make">
+        <div id="rules">
+          <p>Usa almeno 2 lettere.</p>
+          <p>Numeri e altri simboli non sono consentiti.</p>
+        </div>
+        <div>
+          <input
+            id="word" type="text"
+            placeholder="Scrivi la parola qui"
+            minlength="2" pattern="[a-zA-Z]{2,}" required>
+        </div>
+        <div>
+          <button type="submit" >Crea Puzzle</button>
+        </div>
+      </form>
+    </div>
+    <script>
+document
+  .querySelector('#make')
+    .addEventListener('submit', e => {
+      e.preventDefault()
+
+      const word = document.querySelector('#word').value
+      if (!/[a-zA-Z]{2,}/.test(word)) {
+        return
+      }
+
+      const parts = location.pathname.split('/')
+      location.href = location.origin + parts.slice(0, parts.length - 1).join('/') + '/index2.html?s=' + encodeURIComponent(btoa(word))
+    })
+    </script>
+  </body>
+</html>
