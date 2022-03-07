@@ -69,14 +69,14 @@
       <h1>PAR🇮🇹LE</h1>
       <form id="make">
         <div id="rules">
-          <p>Usa almeno 2 lettere.</p>
+          <p>Usa 3, 4, 5 o 6 lettere.</p>
           <p>Numeri e altri simboli non sono consentiti.</p>
         </div>
         <div>
           <input
             id="word" type="text"
             placeholder="Scrivi la parola qui"
-            minlength="2" pattern="[a-zA-Z]{2,}" required>
+            minlength="3" maxlength="6" pattern="[a-zA-Z]{3,6}" required>
         </div>
         <div>
           <button type="submit" >Crea Puzzle</button>
@@ -90,7 +90,7 @@ document
       e.preventDefault()
 
       const word = document.querySelector('#word').value
-      if (!/[a-zA-Z]{2,}/.test(word)) {
+      if (!/[a-zA-Z]{3,6}/.test(word)) {
         return
       }
 
